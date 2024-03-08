@@ -12,7 +12,7 @@ export const useMenuStore = defineStore('menuStore', () => {
         }
         const res = await getTree()
         menus.value = res.data
-        const menuItems = flatMenus(menus.value).filter(it => it.menuType === 'M')
+        const menuItems = flatMenus(menus.value).filter(it => it.menuType === 'C')
         for (let menu of menuItems) {
             const indexRoute = router.getRoutes().find(it => it.name === "index")
             indexRoute.children.push(toRoute(menu))
@@ -36,9 +36,9 @@ export const useMenuStore = defineStore('menuStore', () => {
 
     const toRoute = (menu) => {
         return {
-            name: menu.name,
+            name: menu.menuName,
             path: menu.path,
-            component: () => import( /* @vite-ignore */ `@/views/${menu.component}`)
+            component: () => import( /* @vite-ignore */ `@/views/${menu.component}.vue`)
         }
     }
 
