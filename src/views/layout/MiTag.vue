@@ -7,8 +7,8 @@
   <el-scrollbar style="height: 40px" :vertical="true" @wheel.native.prevent="handleWheel" ref="scrollbarRef">
     <div class="scrollbar-flex-content">
       <p class=" scrollbar-demo-item" v-for="item in menuStore.tags" :key="item" >
-        <el-dropdown trigger="contextmenu" style="max-width:80px;">
-          <router-link :to="item.path" class="el-button el-button--small" :class="item.meta.active ? 'el-button--primary': '' " >
+        <el-dropdown trigger="contextmenu" style="max-width:120px;">
+          <router-link :to="item.path" class="el-button " :class="item.meta.active ? 'el-button--primary': '' " >
             {{item.name}}
 
             <el-icon class="el-icon--right" @click.prevent="menuStore.removeTag(item)">
@@ -17,10 +17,10 @@
           </router-link>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item>关闭</el-dropdown-item>
-              <el-dropdown-item>关闭右侧</el-dropdown-item>
-              <el-dropdown-item>关闭其他</el-dropdown-item>
-              <el-dropdown-item>关闭所有</el-dropdown-item>
+              <el-dropdown-item @click="menuStore.removeTag(item)">关闭</el-dropdown-item>
+              <el-dropdown-item @click="menuStore.removeTag(item, 'right')">关闭右侧</el-dropdown-item>
+              <el-dropdown-item @click="menuStore.removeTag(item, 'others')">关闭其他</el-dropdown-item>
+              <el-dropdown-item @click="menuStore.removeTag(item, 'all')">关闭所有</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>

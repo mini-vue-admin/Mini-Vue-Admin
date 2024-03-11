@@ -46,25 +46,46 @@ export const useMenuStore = defineStore('menuStore', () => {
         cur.meta.active = true
     }
 
-    const removeTag = (route) => {
-        let target = '/'
-        if (route.meta.active ) {
-            if(tags.value.length > 1) {
-                const i = tags.value.indexOf(route)
-                if (i < 0) {
-                    return
-                }
-                if (i === tags.value.length -1) {
-                    target = tags.value[i-1].path
-                } else {
-                    target = tags.value[i+1].path
-                }
-            } else {
-                target = '/'
+    const removeTag = (route, op) => {
+
+        const curRoute = tags.value.find(it => it.path === router.currentRoute.value.path)
+
+        if (op === 'right') {
+            const curIndex = tags.value.indexOf(curRoute)
+            const i = tags.value.indexOf(route)
+            tags.value = tags.value.slice(0, i + 1)
+            if (curIndex > i) {
+                router.push(route.path)
             }
-            router.push(target)
+        } else if (op === 'others') {
+            tags.value = [route];
+            if (curRoute.path !== route.path) {
+                router.push(route.path)
+            }
+        } else if (op === 'all') {
+            tags.value = []
+            router.push('/')
+        } else {
+            let target = '/'
+            if (route.meta.active ) {
+                if(tags.value.length > 1) {
+                    const i = tags.value.indexOf(route)
+                    if (i < 0) {
+                        return
+                    }
+                    if (i === tags.value.length -1) {
+                        target = tags.value[i-1].path
+                    } else {
+                        target = tags.value[i+1].path
+                    }
+                } else {
+                    target = '/'
+                }
+                router.push(target)
+            }
+
+            tags.value = tags.value.filter(it => it !== route)
         }
-        tags.value = tags.value.filter(it => it !== route)
 
     }
 
