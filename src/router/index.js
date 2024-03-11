@@ -20,8 +20,17 @@ const router = createRouter({
             name: '404',
             path: '/404',
             component: () => import("@/views/error/404.vue")
-        },
+        }
     ]
 })
+
+export const dynamic = [{
+    path: '/system/dict/:id(\\d+)',
+    name: 'dict-data',
+    component: () => import('@/views/system/dictData.vue')
+}, {
+    path: '/:pathMatch(.*)',
+    redirect: '/404'
+}]
 
 export default router

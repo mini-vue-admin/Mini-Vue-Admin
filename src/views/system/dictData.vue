@@ -2,31 +2,18 @@
 
   <el-space direction="vertical" :fill="true" style="width: 100%">
     <div></div>
-    <el-form ref="queryRef" :model="queryParams" :inline="true" class="fix-form-inline">
-      <el-form-item label="菜单类型" prop="menuType">
-        <el-select v-model="queryParams.menuType" placeholder="选择菜单类型" clearable>
-          <MiDictOption dict-type="common.status"/>
-        </el-select>
-      </el-form-item>
+    <el-form ref="queryRef" :model="queryParams" :inline="true" style="">
 
-      <el-form-item label="菜单名称" prop="menuName">
-        <el-input v-model="queryParams.menuName"
-                  placeholder="请输入菜单名称"
+      <el-form-item label="字典标签" prop="dictLabel">
+        <el-input v-model="queryParams.dictLabel"
+                  placeholder="请输入字典标签"
                   clearable
                   @keyup.enter.native="handleQuery"/>
       </el-form-item>
 
-
-      <el-form-item label="组件路径" prop="component">
-        <el-input v-model="queryParams.component"
-                  placeholder="请输入组件路径"
-                  clearable
-                  @keyup.enter.native="handleQuery"/>
-      </el-form-item>
-
-      <el-form-item label="路由路径" prop="path">
-        <el-input v-model="queryParams.path"
-                  placeholder="请输入路由路径"
+      <el-form-item label="字典键值" prop="dictValue">
+        <el-input v-model="queryParams.dictValue"
+                  placeholder="请输入字典键值"
                   clearable
                   @keyup.enter.native="handleQuery"/>
       </el-form-item>
@@ -39,6 +26,14 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
+        <RouterLink to="/system/dict">
+          <el-button icon="Back">
+            返回
+          </el-button>
+        </RouterLink>
+      </el-col>
+
+      <el-col :span="1.5">
         <el-button type="primary" @click="handleAdd">新增</el-button>
       </el-col>
 
@@ -49,16 +44,25 @@
       <el-col :span="1.5">
         <el-button type="danger" @click="handleDelete">删除</el-button>
       </el-col>
+
+
     </el-row>
 
-    <el-table ref="tableRef" :data="tableData" style="width: 100%;" :border="true" row-key="id">
+    <el-table ref="tableRef" :data="tableData.list" style="width: 100%;" :border="true">
       <el-table-column type="selection"></el-table-column>
       <el-table-column fixed prop="id" label="id"/>
-      <el-table-column prop="menuName" label="菜单名称"/>
-      <el-table-column prop="menuType" label="菜单类型"/>
-      <el-table-column prop="orderNum" label="显示排序"/>
-      <el-table-column prop="component" label="组件路径"/>
-      <el-table-column prop="path" label="路由地址"/>
+      <el-table-column prop="dictType" label="字典类型"/>
+      <el-table-column prop="dictLabel" label="字典标签"/>
+      <el-table-column prop="dictValue" label="字典键值"/>
+      <el-table-column prop="orderNum" label="字典排序"/>
+      <el-table-column prop="cssClass" label="样式属性">
+        <template #default="scope">
+          <el-button size="small" :type="scope.row.cssClass">{{scope.row.cssClass}}</el-button>
+        </template>
+      </el-table-column>
+      <el-table-column prop="listClass" label="表格回显样式"/>
+      <el-table-column prop="asDefault" label="是否默认"/>
+
       <el-table-column prop="status" label="状态">
         <template #default="scope">
           <MiDictLabel :dictValue="scope.row.status" dictType="common.status"/>
@@ -71,36 +75,43 @@
         </template>
       </el-table-column>
     </el-table>
-
+    <div style="display: flex; align-items: center; justify-content: flex-end; ">
+      <span>总条数: {{ tableData.total }}</span>
+      <el-pagination background layout="->, prev, pager, next, sizes"
+                     :total="tableData.total"
+                     v-model:page-size="queryParams.pageSize"
+                     v-model:current-page="queryParams.pageIndex"
+                     :page-sizes="[10, 20, 50, 100]"
+                     @change="handleQuery"
+                     style="padding-top: 5px"/>
+    </div>
   </el-space>
 
   <el-dialog :title="formDialog.title" v-model="formDialog.open" width="500px" append-to-body
              :close-on-click-modal="false">
     <el-form ref="formRef" :model="formData" :rules="rules" label-width="80px">
-      <el-form-item label="父级菜单" prop="parentId">
-        <el-tree-select v-model="formData.parentId" :data="menuTreeData" :props="{value:'id', label:'menuName'}"
-                        check-strictly/>
+      <el-form-item label="字典类型" prop="dictType">
+        <el-input v-model="formData.dictType" placeholder="请输入字典类型"/>
       </el-form-item>
 
-      <el-form-item label="菜单名称" prop="menuName">
-        <el-input v-model="formData.menuName" placeholder="请输入菜单名称"/>
+      <el-form-item label="字典标签" prop="dictLabel">
+        <el-input v-model="formData.dictLabel" placeholder="请输入字典标签"/>
       </el-form-item>
-      <el-form-item label="菜单类型" prop="menuType">
-        <el-select v-model="formData.menuType" placeholder="选择菜单类型" clearable>
-          <MiDictOption dict-type="common.status"/>
+      <el-form-item label="字典键值" prop="dictValue">
+        <el-input v-model="formData.dictValue" placeholder="请输入字典键值"/>
+      </el-form-item>
+      <el-form-item label="字典排序" prop="orderNum">
+        <el-input v-model="formData.orderNum" type="number" placeholder="请输入字典排序"/>
+      </el-form-item>
+      <el-form-item label="样式属性" prop="cssClass">
+        <el-select v-model="formData.cssClass" placeholder="请选择样式属性" clearable>
+          <el-option label="primary" value="primary"/>
+          <el-option label="success" value="success"/>
+          <el-option label="info" value="info"/>
+          <el-option label="warning" value="warning"/>
+          <el-option label="danger" value="danger"/>
         </el-select>
       </el-form-item>
-      <el-form-item label="组件路径" prop="component">
-        <el-input v-model="formData.component" placeholder="请输入组件路径"/>
-      </el-form-item>
-      <el-form-item label="路由路径" prop="path">
-        <el-input v-model="formData.path" placeholder="请输入路由路径"/>
-      </el-form-item>
-
-      <el-form-item label="显示排序" prop="orderNum">
-        <el-input v-model="formData.orderNum" type="number" placeholder="请输入显示排序"/>
-      </el-form-item>
-
       <el-form-item label="状态" prop="status">
         <el-switch v-model="formData.status" placeholder="请选择状态"
                    active-text="启用"
@@ -116,48 +127,58 @@
 
 <script setup>
 import {reactive, ref} from "vue";
-import {create, del, getTree, getById, update} from "@/api/system/menu.js"
+import {create, del, getPage, getById, update} from "@/api/system/dictData.js"
+import {getById as getDictTypeById}  from "@/api/system/dictType.js"
 import {ElMessage, ElMessageBox} from "element-plus";
-import MiDictLabel from '@/components/dict/MiDictLabel.vue'
-import MiDictOption from "@/components/dict/MiDictOption.vue";
+import MiDictLabel from "@/components/dict/MiDictLabel.vue";
+import { useRoute } from 'vue-router';
 
 const queryRef = ref(null)
 const formRef = ref()
 const tableRef = ref()
 
+
+
 const queryParams = reactive({
-  menuType: null,
-  menuName: null,
-  component: null,
-  path: null,
+  dictLabel: null,
+  dictValue: null,
+  dictType: null,
+  pageIndex: 1,
+  pageSize: 10
 })
 
 const rules = {
-  menuName: [
-    {required: true, message: "菜单名称不能为空", trigger: "blur"},
-    {pattern: /^[a-zA-Z][a-zA-Z0-9_-]*$/, message: "名称只能包含字母、数字、下划线、中划线，且字母开头", trigger: "blur"},
-    {min: 2, max: 30, message: "长度 2 - 30 个字符", trigger: "blur"},
+  dictLabel: [
+    {required: true, message:"字典标签不能为空", trigger: "blur"},
   ],
-  menuType: [
-    {required: true, message: "菜单类型不能为空", trigger: "blur"},
-  ],
+  dictValue: [
+    {required: true, message: "字典键值不能为空", trigger: "blur"},
+  ]
 }
 
 const formData = ref({})
 const formDialog = reactive({
-  title: "创建菜单",
+  title: "新增字典项",
   open: false
 })
-// 创建或修改菜单的父级菜单下拉数据
-const menuTreeData = ref([])
 
-const tableData = ref([])
-handleQuery()
+const tableData = ref({
+  list: [],
+  total: 0
+})
+
+const route = useRoute()
+getDictTypeById(route.params.id).then(res => {
+  queryParams.dictType = res.data.dictType
+  handleQuery()
+})
+
+
 
 // ---------------------- Functions ---------------------------
 
 function handleQuery() {
-  getTree(queryParams).then(res => {
+  getPage(queryParams).then(res => {
     tableData.value = res.data
   })
 }
@@ -186,7 +207,7 @@ function handleUpdate(id) {
     formData.value = res.data
   }).then(() => {
     formDialog.open = true
-    formDialog.title = "修改菜单"
+    formDialog.title = "修改字典项"
   })
 }
 
@@ -221,21 +242,14 @@ function handleDelete(id) {
 function handleAdd() {
   resetForm()
   formDialog.open = true
-  formDialog.title = "新增菜单"
+  formDialog.title = "新增字典项"
 }
 
 function resetForm() {
   formData.value = {
-    username: null,
-    password: null,
+    dictType: queryParams.dictType,
+    status: '0'
   }
-  getTree().then(res => {
-    menuTreeData.value = [{
-      id: 1,
-      menuName: '根节点',
-      children: res.data
-    }]
-  })
 }
 
 function submitForm(formEl) {
@@ -267,11 +281,6 @@ function submitForm(formEl) {
 function cancelForm() {
   formDialog.open = false
 }
-
-function goBack() {
-
-}
-
 </script>
 
 <style scoped>

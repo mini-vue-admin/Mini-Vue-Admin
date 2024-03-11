@@ -62,7 +62,11 @@
         <el-table-column prop="email" label="邮箱"/>
         <el-table-column prop="phonenumber" label="手机号码"/>
         <el-table-column prop="sex" label="性别"/>
-        <el-table-column prop="status" label="状态"/>
+        <el-table-column prop="status" label="状态">
+          <template #default="scope">
+            <MiDictLabel :dictValue="scope.row.status" dictType="common.status"/>
+          </template>
+        </el-table-column>
         <el-table-column fixed="right" label="操作">
           <template #default="scope">
             <el-button link type="primary" size="small" @click="handleUpdate(scope.row.id)">修改</el-button>
@@ -117,6 +121,7 @@
 import {reactive, ref} from "vue";
 import {create, del, getPage, getById, update} from "@/api/system/user.js"
 import {ElMessage, ElMessageBox} from "element-plus";
+import MiDictLabel from "@/components/dict/MiDictLabel.vue";
 
 const queryRef = ref(null)
 const formRef = ref()

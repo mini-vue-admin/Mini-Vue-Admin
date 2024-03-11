@@ -31,14 +31,14 @@ export const useDictStore = defineStore('dictStore', () => {
     }
 
     const getDictValue = (dictType, dictLabel) => {
-        return dicts.get(dictType).find(it => it.dictLabel === dictLabel)
+        return getDictsByType(dictType).find(it => it.dictLabel === dictLabel)
     }
 
     const getDictLabel = (dictType, dictValue) => {
-        return dicts.get(dictType).find(it => it.dictValue === dictValue)
+        return getDictsByType(dictType).find(it => it.dictValue === dictValue) ?? {}
     }
 
-    const getDictsByType = (dictType) => dicts.get(dictType)
+    const getDictsByType = (dictType) => dicts.get(dictType)??[]
 
     return {initStore, getDictValue, getDictLabel, getDictsByType}
 })

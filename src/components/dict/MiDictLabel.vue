@@ -9,7 +9,7 @@ export default {
 
 <script setup>
 import {useDictStore} from "@/stores/dict.js";
-import {ref, onMounted, defineProps} from 'vue'
+import {ref, onMounted, defineProps, computed} from 'vue'
 
 const props = defineProps({
   dictValue: {
@@ -22,18 +22,21 @@ const props = defineProps({
   }
 })
 
-const dict = ref({
-  cssClass: 'primary',
-  dictLabel: null
-})
+
 
 const dictStore = useDictStore()
 
-// 在组件挂载时获取用户信息
-onMounted(async () => {
-  dictStore.initStore().then(() => {
-    dict.value = dictStore.getDictLabel(props.dictType, props.dictValue)
-  })
+
+
+const dict = computed(() => {
+  if(props.dictType === null) {
+    return {
+      cssClass: 'primary',
+      dictLabel: null
+    }
+  }
+
+  return dictStore.getDictLabel(props.dictType, props.dictValue)
 })
 
 </script>

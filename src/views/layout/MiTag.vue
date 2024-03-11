@@ -1,19 +1,17 @@
 <template>
   <el-breadcrumb separator="/">
-    <el-breadcrumb-item
-    ><a href="/public">系统管理</a></el-breadcrumb-item
-    >
-    <el-breadcrumb-item>用户管理</el-breadcrumb-item>
+    <el-breadcrumb-item  v-for="item in menuStore.breadcrumb">{{item}}</el-breadcrumb-item>
   </el-breadcrumb>
   <div style="height: 10px"></div>
 
   <el-scrollbar style="height: 40px" :vertical="true" @wheel.native.prevent="handleWheel" ref="scrollbarRef">
     <div class="scrollbar-flex-content">
-      <p class=" scrollbar-demo-item" v-for="item in 50" :key="item" >
+      <p class=" scrollbar-demo-item" v-for="item in menuStore.tags" :key="item" >
         <el-dropdown trigger="contextmenu" style="max-width:80px;">
-          <router-link to="" class="el-button el-button--small">
-            asdf
-            <el-icon class="el-icon--right" @click="console.log('adsf')">
+          <router-link :to="item.path" class="el-button el-button--small" :class="item.meta.active ? 'el-button--primary': '' " >
+            {{item.name}}
+
+            <el-icon class="el-icon--right" @click.prevent="menuStore.removeTag(item)">
               <Close/>
             </el-icon>
           </router-link>
@@ -38,19 +36,19 @@ export default {
 
 <script setup>
 import {computed, ref} from "vue";
+import {useRoute} from "vue-router";
+import {useMenuStore} from "@/stores/menu.js";
 
 const scrollbarRef = ref()
-const scrollWrapper = computed(() => scrollbarRef.value.$el)
-
 function handleWheel(e) {
   const wheelDelta = e.wheelDelta || -e.deltaY * 40
   // scrollbar.wrap$获取到包裹容器的element对象
   scrollbarRef.value.$refs.wrapRef.scrollLeft = scrollbarRef.value.$refs.wrapRef.scrollLeft - wheelDelta / 4
 }
 
-function handleRightClick() {
+const menuStore = useMenuStore()
 
-}
+
 </script>
 
 

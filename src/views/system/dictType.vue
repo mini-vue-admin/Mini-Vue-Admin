@@ -2,31 +2,17 @@
 
   <el-space direction="vertical" :fill="true" style="width: 100%">
     <div></div>
-    <el-form ref="queryRef" :model="queryParams" :inline="true" class="fix-form-inline">
-      <el-form-item label="菜单类型" prop="menuType">
-        <el-select v-model="queryParams.menuType" placeholder="选择菜单类型" clearable>
-          <MiDictOption dict-type="common.status"/>
-        </el-select>
-      </el-form-item>
-
-      <el-form-item label="菜单名称" prop="menuName">
-        <el-input v-model="queryParams.menuName"
-                  placeholder="请输入菜单名称"
+    <el-form ref="queryRef" :model="queryParams" :inline="true" style="">
+      <el-form-item label="字典名称" prop="dictName">
+        <el-input v-model="queryParams.dictName"
+                  placeholder="请输入字典名称"
                   clearable
                   @keyup.enter.native="handleQuery"/>
       </el-form-item>
 
-
-      <el-form-item label="组件路径" prop="component">
-        <el-input v-model="queryParams.component"
-                  placeholder="请输入组件路径"
-                  clearable
-                  @keyup.enter.native="handleQuery"/>
-      </el-form-item>
-
-      <el-form-item label="路由路径" prop="path">
-        <el-input v-model="queryParams.path"
-                  placeholder="请输入路由路径"
+      <el-form-item label="字典类型" prop="dictType">
+        <el-input v-model="queryParams.dictType"
+                  placeholder="请输入字典类型"
                   clearable
                   @keyup.enter.native="handleQuery"/>
       </el-form-item>
@@ -49,16 +35,20 @@
       <el-col :span="1.5">
         <el-button type="danger" @click="handleDelete">删除</el-button>
       </el-col>
+
+
     </el-row>
 
-    <el-table ref="tableRef" :data="tableData" style="width: 100%;" :border="true" row-key="id">
+    <el-table ref="tableRef" :data="tableData.list" style="width: 100%;" :border="true">
       <el-table-column type="selection"></el-table-column>
       <el-table-column fixed prop="id" label="id"/>
-      <el-table-column prop="menuName" label="菜单名称"/>
-      <el-table-column prop="menuType" label="菜单类型"/>
-      <el-table-column prop="orderNum" label="显示排序"/>
-      <el-table-column prop="component" label="组件路径"/>
-      <el-table-column prop="path" label="路由地址"/>
+      <el-table-column prop="dictName" label="字典名称">
+        <template #default="scope">
+          <RouterLink :to="'dict/' + scope.row.id">{{ scope.row.dictName }}</RouterLink>
+        </template>
+      </el-table-column>
+      <el-table-column prop="dictType" label="字典类型"/>
+      <el-table-column prop="remark" label="备注"/>
       <el-table-column prop="status" label="状态">
         <template #default="scope">
           <MiDictLabel :dictValue="scope.row.status" dictType="common.status"/>
@@ -71,36 +61,30 @@
         </template>
       </el-table-column>
     </el-table>
-
+    <div style="display: flex; align-items: center; justify-content: flex-end; ">
+      <span>总条数: {{ tableData.total }}</span>
+      <el-pagination background layout="->, prev, pager, next, sizes"
+                     :total="tableData.total"
+                     v-model:page-size="queryParams.pageSize"
+                     v-model:current-page="queryParams.pageIndex"
+                     :page-sizes="[10, 20, 50, 100]"
+                     @change="handleQuery"
+                     style="padding-top: 5px"/>
+    </div>
   </el-space>
 
   <el-dialog :title="formDialog.title" v-model="formDialog.open" width="500px" append-to-body
              :close-on-click-modal="false">
     <el-form ref="formRef" :model="formData" :rules="rules" label-width="80px">
-      <el-form-item label="父级菜单" prop="parentId">
-        <el-tree-select v-model="formData.parentId" :data="menuTreeData" :props="{value:'id', label:'menuName'}"
-                        check-strictly/>
+      <el-form-item label="字典名称" prop="dictName">
+        <el-input v-model="formData.dictName" placeholder="请输入字典名称"/>
       </el-form-item>
-
-      <el-form-item label="菜单名称" prop="menuName">
-        <el-input v-model="formData.menuName" placeholder="请输入菜单名称"/>
+      <el-form-item label="字典类型" prop="dictType">
+        <el-input v-model="formData.dictType" placeholder="请输入字典类型"/>
       </el-form-item>
-      <el-form-item label="菜单类型" prop="menuType">
-        <el-select v-model="formData.menuType" placeholder="选择菜单类型" clearable>
-          <MiDictOption dict-type="common.status"/>
-        </el-select>
+      <el-form-item label="备注" prop="remark">
+        <el-input v-model="formData.remark" placeholder="请输入备注"/>
       </el-form-item>
-      <el-form-item label="组件路径" prop="component">
-        <el-input v-model="formData.component" placeholder="请输入组件路径"/>
-      </el-form-item>
-      <el-form-item label="路由路径" prop="path">
-        <el-input v-model="formData.path" placeholder="请输入路由路径"/>
-      </el-form-item>
-
-      <el-form-item label="显示排序" prop="orderNum">
-        <el-input v-model="formData.orderNum" type="number" placeholder="请输入显示排序"/>
-      </el-form-item>
-
       <el-form-item label="状态" prop="status">
         <el-switch v-model="formData.status" placeholder="请选择状态"
                    active-text="启用"
@@ -116,48 +100,48 @@
 
 <script setup>
 import {reactive, ref} from "vue";
-import {create, del, getTree, getById, update} from "@/api/system/menu.js"
+import {create, del, getPage, getById, update} from "@/api/system/dictType.js"
 import {ElMessage, ElMessageBox} from "element-plus";
-import MiDictLabel from '@/components/dict/MiDictLabel.vue'
-import MiDictOption from "@/components/dict/MiDictOption.vue";
+import MiDictLabel from "@/components/dict/MiDictLabel.vue";
 
 const queryRef = ref(null)
 const formRef = ref()
 const tableRef = ref()
 
 const queryParams = reactive({
-  menuType: null,
-  menuName: null,
-  component: null,
-  path: null,
+  dictName: null,
+  dictType: null,
+  pageIndex: 1,
+  pageSize: 10
 })
 
 const rules = {
-  menuName: [
-    {required: true, message: "菜单名称不能为空", trigger: "blur"},
-    {pattern: /^[a-zA-Z][a-zA-Z0-9_-]*$/, message: "名称只能包含字母、数字、下划线、中划线，且字母开头", trigger: "blur"},
+  dictType: [
+    {required: true, message: "字典类型不能为空", trigger: "blur"},
+    {pattern: /^[a-zA-Z][a-zA-Z0-9._-]*$/, message: "名称只能包含字母、数字、下划线、中划线，且字母开头", trigger: "blur"},
     {min: 2, max: 30, message: "长度 2 - 30 个字符", trigger: "blur"},
   ],
-  menuType: [
-    {required: true, message: "菜单类型不能为空", trigger: "blur"},
-  ],
+  dictName: [
+    {required: true, message: "字典名称不能为空", trigger: "blur"},
+  ]
 }
 
 const formData = ref({})
 const formDialog = reactive({
-  title: "创建菜单",
+  title: "新增字典",
   open: false
 })
-// 创建或修改菜单的父级菜单下拉数据
-const menuTreeData = ref([])
 
-const tableData = ref([])
+const tableData = ref({
+  list: [],
+  total: 0
+})
 handleQuery()
 
 // ---------------------- Functions ---------------------------
 
 function handleQuery() {
-  getTree(queryParams).then(res => {
+  getPage(queryParams).then(res => {
     tableData.value = res.data
   })
 }
@@ -186,7 +170,7 @@ function handleUpdate(id) {
     formData.value = res.data
   }).then(() => {
     formDialog.open = true
-    formDialog.title = "修改菜单"
+    formDialog.title = "修改字典"
   })
 }
 
@@ -221,21 +205,16 @@ function handleDelete(id) {
 function handleAdd() {
   resetForm()
   formDialog.open = true
-  formDialog.title = "新增菜单"
+  formDialog.title = "新增字典"
 }
 
 function resetForm() {
   formData.value = {
-    username: null,
-    password: null,
+    dictName: null,
+    dictType: null,
+    remark: null,
+    status: '0'
   }
-  getTree().then(res => {
-    menuTreeData.value = [{
-      id: 1,
-      menuName: '根节点',
-      children: res.data
-    }]
-  })
 }
 
 function submitForm(formEl) {
