@@ -49,7 +49,7 @@ function handleWheel(e) {
 }
 
 function handleRightClick() {
-  console.log('adfsasdf')
+
 }
 </script>
 

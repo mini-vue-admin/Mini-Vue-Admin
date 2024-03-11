@@ -1,33 +1,30 @@
 import {defineStore} from 'pinia'
-import {ref} from 'vue'
+import {ref, defineAsyncComponent} from 'vue'
 import {getTree} from "@/api/system/menu.js";
-
+import router from '@/router/index.js'
 export const useMenuStore = defineStore('menuStore', () => {
     const menus = ref([])
-    let loaded = false
+    let loaded = ref(false)
 
-    const initRouter = async (router) => {
-        if (loaded) {
-            return Promise.resolve()
+    const initRouter = async () => {
+        if (loaded.value) {
+            return
         }
         const res = await getTree()
         menus.value = res.data
         const menuItems = flatMenus(menus.value).filter(it => it.menuType === 'C')
         for (let menu of menuItems) {
-            const indexRoute = router.getRoutes().find(it => it.name === "index")
-            indexRoute.children.push(toRoute(menu))
+            router.addRoute('index', toRoute(menu))
         }
+        loaded.value = true
         console.log(router.getRoutes())
-
-        loaded = true
-        return Promise.resolve()
     }
 
     const flatMenus = (menus) => {
         const arr = new Array()
         for (let menu of menus) {
             arr.push(menu)
-            if(menu.children) {
+            if (menu.children) {
                 arr.push(...flatMenus(menu.children))
             }
         }
@@ -38,9 +35,9 @@ export const useMenuStore = defineStore('menuStore', () => {
         return {
             name: menu.menuName,
             path: menu.path,
-            component: () => import( /* @vite-ignore */ `@/views/${menu.component}.vue`)
+            component: () => import("../views/" + menu.component + ".vue")
         }
     }
 
-    return {menus, initRouter}
+    return {menus, loaded, initRouter}
 })

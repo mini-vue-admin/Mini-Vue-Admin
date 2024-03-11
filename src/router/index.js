@@ -1,16 +1,16 @@
 import {createRouter, createWebHistory} from 'vue-router'
-import Index from '../views/Index.vue'
-import Login from "@/views/Login.vue";
-import Home from "@/views/Home.vue";
+import Index from '../views/index.vue'
+import Login from "@/views/login.vue";
+import Home from "@/views/home.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
         {
-            path: '/',
+            path: '',
             name: 'index',
             component: Index,
-            redirect: '/Home',
+            redirect: '/home',
             children: []
         }, {
             path: '/login',

@@ -1,7 +1,6 @@
 <template>
   <aside>
     <el-menu style="width: 200px; height: 100%">
-
       <MiMenuItem :menu-data="menuData"></MiMenuItem>
     </el-menu>
   </aside>
@@ -21,9 +20,6 @@ const menuStore = useMenuStore()
 const menuData = ref([])
 
 onMounted(async () => {
-  menuData.value = menuStore.menus.filter(it => it.menuType != 'B')
-  console.log(menuData.value)
+  menuData.value = menuStore.menus.filter(it => it.menuType !== 'B')
 })
-
-
 </script>

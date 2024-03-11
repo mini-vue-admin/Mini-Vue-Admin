@@ -22,7 +22,6 @@ export const useDictStore = defineStore('dictStore', () => {
                         }
                         dicts.get(dictType).push(item);
                     }
-                    console.log(dicts)
                     loaded = true
                     resolve()
                 })
