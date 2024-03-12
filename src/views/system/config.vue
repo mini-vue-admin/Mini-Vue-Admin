@@ -170,10 +170,7 @@ function handleUpdate(id) {
   if (id instanceof Event) {
     id = tableRef.value.getSelectionRows().map(it => it.id)
     if (id.length === 0 || id.length > 1) {
-      ElMessage({
-        message: "请选择一条记录",
-        type: "warning"
-      })
+      ElMessage.warning('请选择一条记录')
       return
     }
     id = id[0]
@@ -192,10 +189,7 @@ function handleDelete(id) {
   if (id instanceof Event) {
     id = tableRef.value.getSelectionRows().map(it => it.id)
     if (id.length === 0) {
-      ElMessage({
-        message: "请选择至少一条记录",
-        type: "warning"
-      })
+      ElMessage.warning('请选择至少一条记录')
       return
     }
   }
@@ -206,10 +200,7 @@ function handleDelete(id) {
   })
       .then(() => {
         del(id).then(res => {
-          ElMessage({
-            message: '操作成功',
-            type: 'success',
-          })
+          ElMessage.success('操作成功')
           handleQuery()
         })
       })
@@ -234,19 +225,13 @@ function submitForm(formEl) {
     if (valid) {
       if (formData.value.id != null) {
         update(formData.value).then(res => {
-          ElMessage({
-            message: '操作成功',
-            type: 'success',
-          })
+          ElMessage.success('操作成功')
           formDialog.open = false
           handleQuery()
         })
       } else {
         create(formData.value).then(res => {
-          ElMessage({
-            message: '操作成功',
-            type: 'success',
-          })
+          ElMessage.success('操作成功')
           formDialog.open = false
           handleQuery()
         })

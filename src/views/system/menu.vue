@@ -100,10 +100,10 @@
           <MiDictOption dict-type="system.menu.type"/>
         </el-select>
       </el-form-item>
-      <el-form-item label="组件路径" prop="component">
+      <el-form-item label="组件路径" prop="component" v-if="formData.menuType === 'C'">
         <el-input v-model="formData.component" placeholder="请输入组件路径"/>
       </el-form-item>
-      <el-form-item label="路由路径" prop="path">
+      <el-form-item label="路由路径" prop="path" v-if="formData.menuType === 'C' || formData.menuType === 'M'">
         <el-input v-model="formData.path" placeholder="请输入路由路径"/>
       </el-form-item>
 
@@ -156,7 +156,7 @@ const rules = {
 
 const formData = ref({})
 const formDialog = reactive({
-  title: "创建菜单",
+  title: null,
   open: false
 })
 // 创建或修改菜单的父级菜单下拉数据
@@ -183,10 +183,7 @@ function handleUpdate(id) {
   if (id instanceof Event) {
     id = tableRef.value.getSelectionRows().map(it => it.id)
     if (id.length === 0 || id.length > 1) {
-      ElMessage({
-        message: "请选择一条记录",
-        type: "warning"
-      })
+      ElMessage.warning('请选择一条记录')
       return
     }
     id = id[0]
@@ -205,10 +202,7 @@ function handleDelete(id) {
   if (id instanceof Event) {
     id = tableRef.value.getSelectionRows().map(it => it.id)
     if (id.length === 0) {
-      ElMessage({
-        message: "请选择至少一条记录",
-        type: "warning"
-      })
+      ElMessage.warning('请选择至少一条记录')
       return
     }
   }
@@ -219,10 +213,7 @@ function handleDelete(id) {
   })
       .then(() => {
         del(id).then(res => {
-          ElMessage({
-            message: '操作成功',
-            type: 'success',
-          })
+          ElMessage.success('操作成功')
           handleQuery()
         })
       })
@@ -254,19 +245,13 @@ function submitForm(formEl) {
     if (valid) {
       if (formData.value.id != null) {
         update(formData.value).then(res => {
-          ElMessage({
-            message: '操作成功',
-            type: 'success',
-          })
+          ElMessage.success('操作成功')
           formDialog.open = false
           handleQuery()
         })
       } else {
         create(formData.value).then(res => {
-          ElMessage({
-            message: '操作成功',
-            type: 'success',
-          })
+          ElMessage.success('操作成功')
           formDialog.open = false
           handleQuery()
         })
