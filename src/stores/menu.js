@@ -8,23 +8,32 @@ export const useMenuStore = defineStore('menuStore', () => {
     const menus = ref([])
     const breadcrumb = ref([])
     const tags = ref([])
+
     let loaded = ref(false)
+    let p = null
 
 
     const initRouter = async () => {
         if (loaded.value) {
             return
+        } else {
+            if (p == null) {
+                p = new Promise(async (resolve, reject) => {
+                    const res = await getTree()
+                    menus.value = res.data
+                    const menuItems = flatMenus(menus.value).filter(it => it.menuType === 'C')
+                    for (let menu of menuItems) {
+                        router.addRoute('index', toRoute(menu))
+                    }
+                    for (let route of dynamic) {
+                        router.addRoute('index', route)
+                    }
+                    loaded.value = true
+                    resolve()
+                })
+            }
+            await p
         }
-        const res = await getTree()
-        menus.value = res.data
-        const menuItems = flatMenus(menus.value).filter(it => it.menuType === 'C')
-        for (let menu of menuItems) {
-            router.addRoute('index', toRoute(menu))
-        }
-        for (let route of dynamic) {
-            router.addRoute('index', route)
-        }
-        loaded.value = true
     }
 
     const initBreadcrumb = () => {
