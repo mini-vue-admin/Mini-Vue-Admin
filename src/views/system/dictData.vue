@@ -60,8 +60,8 @@
           <el-button size="small" :type="scope.row.cssClass">{{scope.row.cssClass}}</el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="listClass" label="表格回显样式"/>
-      <el-table-column prop="asDefault" label="是否默认"/>
+<!--      <el-table-column prop="listClass" label="表格回显样式"/>-->
+<!--      <el-table-column prop="asDefault" label="是否默认"/>-->
 
       <el-table-column prop="status" label="状态">
         <template #default="scope">
@@ -105,6 +105,7 @@
       </el-form-item>
       <el-form-item label="样式属性" prop="cssClass">
         <el-select v-model="formData.cssClass" placeholder="请选择样式属性" clearable>
+          <el-option label="none" value="none"/>
           <el-option label="primary" value="primary"/>
           <el-option label="success" value="success"/>
           <el-option label="info" value="info"/>
@@ -133,16 +134,13 @@ import {ElMessage, ElMessageBox} from "element-plus";
 import MiDictLabel from "@/components/dict/MiDictLabel.vue";
 import { useRoute } from 'vue-router';
 
-const queryRef = ref(null)
+const queryRef = ref()
 const formRef = ref()
 const tableRef = ref()
 
 
 
 const queryParams = reactive({
-  dictLabel: null,
-  dictValue: null,
-  dictType: null,
   pageIndex: 1,
   pageSize: 10
 })
@@ -153,12 +151,15 @@ const rules = {
   ],
   dictValue: [
     {required: true, message: "字典键值不能为空", trigger: "blur"},
+  ],
+  cssClass: [
+    {required: true, message: "样式属性不能为空", trigger: "blur"},
   ]
 }
 
 const formData = ref({})
 const formDialog = reactive({
-  title: "新增字典项",
+  title: null,
   open: false
 })
 
@@ -246,6 +247,8 @@ function handleAdd() {
 function resetForm() {
   formData.value = {
     dictType: queryParams.dictType,
+    orderNum: 0,
+    cssClass: 'none',
     status: '0'
   }
 }

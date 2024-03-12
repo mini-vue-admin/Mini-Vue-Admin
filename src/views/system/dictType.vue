@@ -105,13 +105,11 @@ import {create, del, getPage, getById, update} from "@/api/system/dictType.js"
 import {ElMessage, ElMessageBox} from "element-plus";
 import MiDictLabel from "@/components/dict/MiDictLabel.vue";
 
-const queryRef = ref(null)
+const queryRef = ref()
 const formRef = ref()
 const tableRef = ref()
 
 const queryParams = reactive({
-  dictName: null,
-  dictType: null,
   pageIndex: 1,
   pageSize: 10
 })
@@ -119,7 +117,7 @@ const queryParams = reactive({
 const rules = {
   dictType: [
     {required: true, message: "字典类型不能为空", trigger: "blur"},
-    {pattern: /^[a-zA-Z][a-zA-Z0-9._-]*$/, message: "名称只能包含字母、数字、下划线、中划线，且字母开头", trigger: "blur"},
+    {pattern: /^[a-zA-Z][a-zA-Z0-9._-]*$/, message: "名称只能包含字母、数字、下划线、中划线、点，且字母开头", trigger: "blur"},
     {min: 2, max: 30, message: "长度 2 - 30 个字符", trigger: "blur"},
   ],
   dictName: [
@@ -129,7 +127,7 @@ const rules = {
 
 const formData = ref({})
 const formDialog = reactive({
-  title: "新增字典",
+  title: null,
   open: false
 })
 
@@ -211,9 +209,6 @@ function handleAdd() {
 
 function resetForm() {
   formData.value = {
-    dictName: null,
-    dictType: null,
-    remark: null,
     status: '0'
   }
 }
@@ -247,12 +242,4 @@ function submitForm(formEl) {
 function cancelForm() {
   formDialog.open = false
 }
-
-function goBack() {
-
-}
-
 </script>
-
-<style scoped>
-</style>
