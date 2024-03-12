@@ -109,7 +109,11 @@ export const useMenuStore = defineStore('menuStore', () => {
         return {
             name: menu.menuName,
             path: menu.path,
-            component: () => import("../views/" + menu.component + ".vue")
+            component: () => import("../views/" + menu.component + ".vue"),
+            meta: {
+                keepAlive: menu.cache,
+                title: menu.menuTitle,
+            }
         }
     }
 

@@ -98,6 +98,7 @@
   </el-dialog>
 </template>
 
+
 <script setup>
 import {reactive, ref} from "vue";
 import {create, del, getPage, getById, update} from "@/api/system/dictType.js"

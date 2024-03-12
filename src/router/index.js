@@ -27,7 +27,10 @@ const router = createRouter({
 export const dynamic = [{
     path: '/system/dict/:id(\\d+)',
     name: 'dict-data',
-    component: () => import('@/views/system/dictData.vue')
+    component: () => import('@/views/system/dictData.vue'),
+    meta: {
+        title: '字典数据'
+    }
 }, {
     path: '/:pathMatch(.*)',
     redirect: '/404'

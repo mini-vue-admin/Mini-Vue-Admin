@@ -6,7 +6,11 @@
       <main style="width: 100%; height: 100%">
         <div style="padding:20px ">
           <MiTag/>
-          <RouterView/>
+          <router-view v-slot="{ Component }">
+            <keep-alive>
+              <component :is="Component" :key="$route.path" />
+            </keep-alive>
+          </router-view>
         </div>
       </main>
     </div>
@@ -19,10 +23,4 @@ import MiHead from "@/views/layout/MiHead.vue";
 import MiMenu from "@/views/layout/MiMenu.vue";
 import MiFoot from "@/views/layout/MiFoot.vue";
 import MiTag from "@/views/layout/MiTag.vue";
-
-
-</script>
-
-<script>
-
 </script>

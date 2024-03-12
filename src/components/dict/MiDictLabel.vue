@@ -21,13 +21,7 @@ const props = defineProps({
     required: true
   }
 })
-
-
-
 const dictStore = useDictStore()
-
-
-
 const dict = computed(() => {
   if(props.dictType === null) {
     return {
@@ -35,7 +29,6 @@ const dict = computed(() => {
       dictLabel: null
     }
   }
-
   return dictStore.getDictLabel(props.dictType, props.dictValue)
 })
 

@@ -1,15 +1,15 @@
 <template>
   <el-breadcrumb separator="/">
-    <el-breadcrumb-item  v-for="item in menuStore.breadcrumb">{{item}}</el-breadcrumb-item>
+    <el-breadcrumb-item v-for="item in menuStore.breadcrumb">{{ item }}</el-breadcrumb-item>
   </el-breadcrumb>
   <div style="height: 10px"></div>
 
   <el-scrollbar style="height: 40px" :vertical="true" @wheel.native.prevent="handleWheel" ref="scrollbarRef">
     <div class="scrollbar-flex-content">
-      <p class=" scrollbar-demo-item" v-for="item in menuStore.tags" :key="item" >
+      <p class=" scrollbar-demo-item" v-for="item in menuStore.tags" :key="item">
         <el-dropdown trigger="contextmenu" style="max-width:120px;">
-          <router-link :to="item.path" class="el-button " :class="item.meta.active ? 'el-button--primary': '' " >
-            {{item.name}}
+          <router-link :to="item.path" class="el-button " :class="item.meta.active ? 'el-button--primary': '' ">
+            {{ item.meta.title }}
 
             <el-icon class="el-icon--right" @click.prevent="menuStore.removeTag(item)">
               <Close/>
@@ -40,6 +40,7 @@ import {useRoute} from "vue-router";
 import {useMenuStore} from "@/stores/menu.js";
 
 const scrollbarRef = ref()
+
 function handleWheel(e) {
   const wheelDelta = e.wheelDelta || -e.deltaY * 40
   // scrollbar.wrap$获取到包裹容器的element对象

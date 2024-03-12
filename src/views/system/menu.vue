@@ -5,18 +5,21 @@
     <el-form ref="queryRef" :model="queryParams" :inline="true" class="fix-form-inline">
       <el-form-item label="菜单类型" prop="menuType">
         <el-select v-model="queryParams.menuType" placeholder="选择菜单类型" clearable>
-          <MiDictOption dict-type="common.status"/>
+          <MiDictOption dict-type="system.menu.type"/>
         </el-select>
       </el-form-item>
-
+      <el-form-item label="菜单标题" prop="menuTitle">
+        <el-input v-model="queryParams.menuTitle"
+                  placeholder="请输入菜单标题"
+                  clearable
+                  @keyup.enter.native="handleQuery"/>
+      </el-form-item>
       <el-form-item label="菜单名称" prop="menuName">
         <el-input v-model="queryParams.menuName"
                   placeholder="请输入菜单名称"
                   clearable
                   @keyup.enter.native="handleQuery"/>
       </el-form-item>
-
-
       <el-form-item label="组件路径" prop="component">
         <el-input v-model="queryParams.component"
                   placeholder="请输入组件路径"
@@ -54,8 +57,13 @@
     <el-table ref="tableRef" :data="tableData" style="width: 100%;" :border="true" row-key="id">
       <el-table-column type="selection"></el-table-column>
       <el-table-column fixed prop="id" label="id"/>
+      <el-table-column prop="menuTitle" label="菜单标题"/>
       <el-table-column prop="menuName" label="菜单名称"/>
-      <el-table-column prop="menuType" label="菜单类型"/>
+      <el-table-column prop="menuType" label="菜单类型">
+        <template #default="scope">
+          <MiDictLabel dict-type="system.menu.type" :dict-value="scope.row.menuType"/>
+        </template>
+      </el-table-column>
       <el-table-column prop="orderNum" label="显示排序"/>
       <el-table-column prop="component" label="组件路径"/>
       <el-table-column prop="path" label="路由地址"/>
@@ -78,16 +86,18 @@
              :close-on-click-modal="false">
     <el-form ref="formRef" :model="formData" :rules="rules" label-width="80px">
       <el-form-item label="父级菜单" prop="parentId">
-        <el-tree-select v-model="formData.parentId" :data="menuTreeData" :props="{value:'id', label:'menuName'}"
+        <el-tree-select v-model="formData.parentId" :data="menuTreeData" :props="{value:'id', label:'menuTitle'}"
                         check-strictly/>
       </el-form-item>
-
+      <el-form-item label="菜单标题" prop="menuTitle">
+        <el-input v-model="formData.menuTitle" placeholder="请输入菜单标题"/>
+      </el-form-item>
       <el-form-item label="菜单名称" prop="menuName">
         <el-input v-model="formData.menuName" placeholder="请输入菜单名称"/>
       </el-form-item>
       <el-form-item label="菜单类型" prop="menuType">
         <el-select v-model="formData.menuType" placeholder="选择菜单类型" clearable>
-          <MiDictOption dict-type="common.status"/>
+          <MiDictOption dict-type="system.menu.type"/>
         </el-select>
       </el-form-item>
       <el-form-item label="组件路径" prop="component">
@@ -104,7 +114,7 @@
       <el-form-item label="状态" prop="status">
         <el-switch v-model="formData.status" placeholder="请选择状态"
                    active-text="启用"
-                   inactive-text="停用" inline-prompt active-value="0" inactive-value="1" />
+                   inactive-text="停用" inline-prompt active-value="0" inactive-value="1"/>
       </el-form-item>
     </el-form>
     <template #footer class="dialog-footer">
@@ -121,18 +131,19 @@ import {ElMessage, ElMessageBox} from "element-plus";
 import MiDictLabel from '@/components/dict/MiDictLabel.vue'
 import MiDictOption from "@/components/dict/MiDictOption.vue";
 
-const queryRef = ref(null)
+const queryRef = ref()
 const formRef = ref()
 const tableRef = ref()
 
-const queryParams = reactive({
-  menuType: null,
-  menuName: null,
-  component: null,
-  path: null,
-})
+const queryParams = reactive({})
 
 const rules = {
+  parentId: [
+    {required: true, message: "父级菜单不能为空", trigger: "blur"},
+  ],
+  menuTitle: [
+    {required: true, message: "菜单标题不能为空", trigger: "blur"},
+  ],
   menuName: [
     {required: true, message: "菜单名称不能为空", trigger: "blur"},
     {pattern: /^[a-zA-Z][a-zA-Z0-9_-]*$/, message: "名称只能包含字母、数字、下划线、中划线，且字母开头", trigger: "blur"},
@@ -226,13 +237,13 @@ function handleAdd() {
 
 function resetForm() {
   formData.value = {
-    username: null,
-    password: null,
+    orderNum: 0,
+    status: '0'
   }
   getTree().then(res => {
     menuTreeData.value = [{
-      id: 1,
-      menuName: '根节点',
+      id: -1,
+      menuTitle: '根节点',
       children: res.data
     }]
   })
@@ -267,12 +278,4 @@ function submitForm(formEl) {
 function cancelForm() {
   formDialog.open = false
 }
-
-function goBack() {
-
-}
-
 </script>
-
-<style scoped>
-</style>

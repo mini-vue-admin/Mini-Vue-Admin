@@ -1,8 +1,7 @@
 import request from "@/api/http.js"
 export function getTree(params) {
-  return   request.get('/system/menu/list', {params: params})
+  return   request.get('/system/menu/tree', {params: params})
 }
-
 
 export function getById(id) {
   return request.get("/system/menu/" + id)

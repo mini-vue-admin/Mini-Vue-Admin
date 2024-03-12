@@ -1,11 +1,11 @@
-export function pathToBreadcrumb(ms) {
+export function pathToBreadcrumb(menus) {
     const map = new Map()
-    for (const m of ms) {
+    for (const m of menus) {
         if (m.path) {
             if (!map.has(m.path)) {
                 map.set(m.path, [])
             }
-            map.get(m.path).push(m.menuName)
+            map.get(m.path).push(m.menuTitle)
         }
         if (m.children) {
             const curBreadcrumb = map.get(m.path) ?? []

@@ -26,7 +26,7 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <RouterLink to="/system/dict">
+        <RouterLink to="/system/dictType">
           <el-button icon="Back">
             返回
           </el-button>
@@ -126,7 +126,7 @@
 </template>
 
 <script setup>
-import {reactive, ref} from "vue";
+import {onActivated, reactive, ref} from "vue";
 import {create, del, getPage, getById, update} from "@/api/system/dictData.js"
 import {getById as getDictTypeById}  from "@/api/system/dictType.js"
 import {ElMessage, ElMessageBox} from "element-plus";
@@ -172,8 +172,6 @@ getDictTypeById(route.params.id).then(res => {
   queryParams.dictType = res.data.dictType
   handleQuery()
 })
-
-
 
 // ---------------------- Functions ---------------------------
 
