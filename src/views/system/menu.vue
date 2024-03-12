@@ -74,6 +74,7 @@
       </el-table-column>
       <el-table-column fixed="right" label="操作">
         <template #default="scope">
+          <el-button link type="primary" size="small" @click="handleAdd(scope.row.id)">新增</el-button>
           <el-button link type="primary" size="small" @click="handleUpdate(scope.row.id)">修改</el-button>
           <el-button link type="danger" size="small" @click="handleDelete(scope.row.id)">删除</el-button>
         </template>
@@ -220,14 +221,15 @@ function handleDelete(id) {
 
 }
 
-function handleAdd() {
-  resetForm()
+function handleAdd(id) {
+  resetForm(id)
   formDialog.open = true
   formDialog.title = "新增菜单"
 }
 
-function resetForm() {
+function resetForm(id) {
   formData.value = {
+    parentId: (id instanceof Event) ? null : id,
     orderNum: 0,
     status: '0'
   }
