@@ -9,7 +9,14 @@
                   clearable
                   @keyup.enter.native="handleQuery"/>
       </el-form-item>
-
+      <el-form-item label="参数类型" prop="configType">
+        <el-select v-model="queryParams.configType"
+                   placeholder="请选择参数类型"
+                   clearable
+                   @keyup.enter.native="handleQuery">
+          <MiDictSelect dict-type="system.config.type"/>
+        </el-select>
+      </el-form-item>
       <el-form-item label="参数键名" prop="configKey">
         <el-input v-model="queryParams.configKey"
                   placeholder="请输入参数键名"
@@ -23,17 +30,6 @@
                   clearable
                   @keyup.enter.native="handleQuery"/>
       </el-form-item>
-
-      <el-form-item label="参数类型" prop="configType">
-        <el-select v-model="queryParams.configType"
-                   placeholder="请选择参数类型"
-                   clearable
-                   @keyup.enter.native="handleQuery">
-          <MiDictSelect dict-type="system.config-type"/>
-        </el-select>
-      </el-form-item>
-
-
       <el-form-item>
         <el-button type="primary" @click="handleQuery">查询</el-button>
         <el-button @click="resetQuery(queryRef)">重置</el-button>
@@ -60,14 +56,14 @@
       <el-table-column type="selection"></el-table-column>
       <el-table-column fixed prop="id" label="id"/>
       <el-table-column prop="configName" label="参数名称"/>
-      <el-table-column prop="remark" label="备注"/>
-      <el-table-column prop="configKey" label="参数键名"/>
-      <el-table-column prop="configValue" label="参数键值"/>
       <el-table-column prop="configType" label="参数类型">
         <template #default="scope">
-          <MiDictLabel dict-type="system.config-type" :dict-value="scope.row.configType"/>
+          <MiDictLabel dict-type="system.config.type" :dict-value="scope.row.configType"/>
         </template>
       </el-table-column>
+      <el-table-column prop="configKey" label="参数键名"/>
+      <el-table-column prop="configValue" label="参数键值"/>
+      <el-table-column prop="remark" label="备注"/>
       <el-table-column fixed="right" label="操作">
         <template #default="scope">
           <el-button link type="primary" size="small" @click="handleUpdate(scope.row.id)">修改</el-button>
@@ -93,21 +89,21 @@
       <el-form-item label="参数名称" prop="configName">
         <el-input v-model="formData.configName" placeholder="请输入参数名称"/>
       </el-form-item>
+      <el-form-item label="参数类型" prop="configType">
+        <el-select v-model="formData.configType">
+          <MiDictSelect dict-type="system.config.type"/>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="参数键名" prop="configKey">
+        <el-input v-model="formData.configKey" placeholder="请输入参数键名"/>
+      </el-form-item>
+      <el-form-item label="参数键值" prop="configValue">
+        <el-input v-model="formData.configValue" placeholder="参数键值"/>
+      </el-form-item>
       <el-form-item label="备注" prop="remark">
         <el-input v-model="formData.remark" type="textarea" placeholder="请输入备注"/>
       </el-form-item>
-      <el-form-item label="参数键名" prop="configKey" >
-        <el-input v-model="formData.configKey" placeholder="请输入参数键名"/>
-      </el-form-item>
-      <el-form-item label="参数键值" prop="configValue" >
-        <el-input v-model="formData.configValue" placeholder="参数键值"/>
-      </el-form-item>
 
-    <el-form-item label="参数类型" prop="configType">
-      <el-select v-model="formData.configType">
-        <MiDictSelect dict-type="system.config-type"/>
-      </el-select>
-    </el-form-item>
     </el-form>
     <template #footer class="dialog-footer">
       <el-button type="primary" @click="submitForm(formRef)">确 定</el-button>
@@ -118,12 +114,12 @@
 
 <script setup>
 import {reactive, ref} from "vue";
-import {create, del, getPage, getById, update} from "@/api/system/config.js"
+import {create, del, getById, getPage, update} from "@/api/system/config.js"
 import {ElMessage, ElMessageBox} from "element-plus";
 import MiDictLabel from "@/components/dict/MiDictLabel.vue";
 import MiDictSelect from "@/components/dict/MiDictOption.vue";
 
-const queryRef = ref(null)
+const queryRef = ref()
 const formRef = ref()
 const tableRef = ref()
 
@@ -136,9 +132,10 @@ const rules = {
   configName: [
     {required: true, message: "参数名称不能为空", trigger: "blur"},
   ],
+  configType: [{required: true, message: "参数类型不能为空", trigger: "blur"},],
   configKey: [
     {required: true, message: "参数键名不能为空", trigger: "blur"},
-    {pattern: /^[a-zA-Z][a-zA-Z0-9_-]*$/, message: "只能包含字母、数字、下划线、中划线，且字母开头", trigger: "blur"},
+    {pattern: /^[a-zA-Z][a-zA-Z0-9._-]*$/, message: "只能包含字母、数字、下划线、中划线、点，且字母开头", trigger: "blur"},
     {min: 2, max: 30, message: "长度 2 - 30 个字符", trigger: "blur"},
   ]
 }
@@ -263,6 +260,3 @@ function cancelForm() {
 }
 
 </script>
-
-<style scoped>
-</style>
