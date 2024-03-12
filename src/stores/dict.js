@@ -16,6 +16,10 @@ export const useDictStore = defineStore('dictStore', () => {
                     const values = await getDictDataList().then(res => res.data)
 
                     for (const item of values) {
+                        if(item.status !== '0') {
+                            continue
+                        }
+
                         const {dictType} = item;
                         if (!dicts.has(dictType)) {
                             dicts.set(dictType, []);
