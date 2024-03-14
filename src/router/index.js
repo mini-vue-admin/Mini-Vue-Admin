@@ -29,21 +29,24 @@ export const dynamic = [{
     name: 'dict-data',
     component: () => import('@/views/system/dictData.vue'),
     meta: {
-        title: '字典数据'
+        title: '字典数据',
+        activePath: '/system/dict-type'
     }
 },{
     path: '/system/dept/member/:id(\\d+)',
     name: 'deptMember',
     component: () => import('@/views/system/dept/member.vue'),
     meta: {
-        title: '部门成员'
+        title: '部门成员',
+        activePath: '/system/dept'
     }
 },{
     path: '/system/role/member/:id(\\d+)',
     name: 'roleMember',
     component: () => import('@/views/system/role/member.vue'),
     meta: {
-        title: '角色成员'
+        title: '角色成员',
+        activePath: '/system/role'
     }
 },
 //     {
