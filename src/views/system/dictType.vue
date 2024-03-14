@@ -44,7 +44,7 @@
       <el-table-column fixed prop="id" label="id"/>
       <el-table-column prop="dictName" label="字典名称">
         <template #default="scope">
-          <RouterLink :to="'dict/' + scope.row.id">{{ scope.row.dictName }}</RouterLink>
+          <RouterLink :to="'/system/dict-type/data/' + scope.row.id">{{ scope.row.dictName }}</RouterLink>
         </template>
       </el-table-column>
       <el-table-column prop="dictType" label="字典类型"/>

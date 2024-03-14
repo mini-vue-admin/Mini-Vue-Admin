@@ -48,6 +48,7 @@
         <template #default="scope">
           <el-button link type="primary" size="small" @click="handleAdd(scope.row.id)">新增</el-button>
           <el-button link type="primary" size="small" @click="handleUpdate(scope.row.id)">修改</el-button>
+          <el-button link type="primary" size="small" @click="handleMember(scope.row.id)">成员</el-button>
           <el-button link type="danger" size="small" @click="handleDelete(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
@@ -99,6 +100,8 @@ import {create, del, getTree, getById, update} from "@/api/system/dept.js"
 import {ElMessage, ElMessageBox} from "element-plus";
 import MiDictLabel from '@/components/dict/MiDictLabel.vue'
 import MiDictOption from "@/components/dict/MiDictOption.vue";
+import {useRouter} from "vue-router";
+import router from "@/router/index.js";
 
 const queryRef = ref()
 const formRef = ref()
@@ -192,6 +195,10 @@ function handleAdd(id) {
   formDialog.title = "新增部门"
 }
 
+function handleMember(id) {
+  router.push('/system/dept/member/' + id)
+}
+
 function resetForm(id) {
   formData.value = {
     parentId: (id instanceof Event) ? null : id,
@@ -231,9 +238,6 @@ function cancelForm() {
   formDialog.open = false
 }
 
-function goBack() {
-
-}
 
 </script>
 

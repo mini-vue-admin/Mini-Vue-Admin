@@ -25,15 +25,24 @@ const router = createRouter({
 })
 
 export const dynamic = [{
-    path: '/system/dict/:id(\\d+)',
+    path: '/system/dict-type/data/:id(\\d+)',
     name: 'dict-data',
     component: () => import('@/views/system/dictData.vue'),
     meta: {
         title: '字典数据'
     }
-}, {
-    path: '/:pathMatch(.*)',
-    redirect: '/404'
-}]
+},{
+    path: '/system/dept/member/:id(\\d+)',
+    name: 'deptMember',
+    component: () => import('@/views/system/dept/member.vue'),
+    meta: {
+        title: '部门成员'
+    }
+},
+//     {
+//     path: '/:pathMatch(.*)',
+//     redirect: '/404'
+// }
+]
 
 export default router

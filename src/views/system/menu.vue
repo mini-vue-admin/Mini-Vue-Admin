@@ -4,7 +4,7 @@
     <div></div>
     <el-form ref="queryRef" :model="queryParams" :inline="true" class="fix-form-inline">
       <el-form-item label="菜单类型" prop="menuType">
-        <el-select v-model="queryParams.menuType" placeholder="选择菜单类型" clearable>
+        <el-select v-model="queryParams.menuType" placeholder="选择菜单类型" clearable @change="handleQuery">
           <MiDictOption dict-type="system.menu.type"/>
         </el-select>
       </el-form-item>
