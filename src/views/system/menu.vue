@@ -169,6 +169,11 @@ handleQuery()
 // ---------------------- Functions ---------------------------
 
 function handleQuery() {
+  if (!queryParams.menuType && !queryParams.menuName && !queryParams.menuTitle && !queryParams.component && !queryParams.path) {
+    queryParams.parentId = -1
+  } else {
+    queryParams.parentId = null
+  }
   getTree(queryParams).then(res => {
     tableData.value = res.data
   })
@@ -233,7 +238,7 @@ function resetForm(id) {
     orderNum: 0,
     status: '0'
   }
-  getTree().then(res => {
+  getTree({parentId: -1}).then(res => {
     menuTreeData.value = [{
       id: -1,
       menuTitle: '根节点',

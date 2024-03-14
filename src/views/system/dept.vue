@@ -46,7 +46,7 @@
       </el-table-column>
       <el-table-column fixed="right" label="操作">
         <template #default="scope">
-          <el-button link type="primary" size="small" @click="handleUpdate(scope.row.id)">新增</el-button>
+          <el-button link type="primary" size="small" @click="handleAdd(scope.row.id)">新增</el-button>
           <el-button link type="primary" size="small" @click="handleUpdate(scope.row.id)">修改</el-button>
           <el-button link type="danger" size="small" @click="handleDelete(scope.row.id)">删除</el-button>
         </template>
@@ -107,6 +107,7 @@ const tableRef = ref()
 const queryParams = reactive({})
 
 const rules = {
+  parentId: [{required: true, message: "父级部门不能为空", trigger: "blur"},],
   deptName: [
     {required: true, message: "部门名称不能为空", trigger: "blur"},
     {min: 2, max: 30, message: "长度 2 - 30 个字符", trigger: "blur"},
@@ -127,9 +128,15 @@ handleQuery()
 // ---------------------- Functions ---------------------------
 
 function handleQuery() {
+  if (!queryParams.deptName) {
+    queryParams.parentId = -1
+  } else {
+    queryParams.parentId = null
+  }
+
   getTree(queryParams).then(res => {
     tableData.value = res.data
-  })
+  });
 }
 
 function resetQuery(formEl) {
@@ -179,20 +186,21 @@ function handleDelete(id) {
 
 }
 
-function handleAdd() {
-  resetForm()
+function handleAdd(id) {
+  resetForm(id)
   formDialog.open = true
   formDialog.title = "新增部门"
 }
 
-function resetForm() {
+function resetForm(id) {
   formData.value = {
-    username: null,
-    password: null,
+    parentId: (id instanceof Event) ? null : id,
+    orderNum: 0,
+    status: '0'
   }
-  getTree().then(res => {
+  getTree({parentId: -1}).then(res => {
     deptTreeData.value = [{
-      id: 1,
+      id: -1,
       deptName: '根节点',
       children: res.data
     }]

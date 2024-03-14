@@ -19,7 +19,7 @@ export const useMenuStore = defineStore('menuStore', () => {
         } else {
             if (p == null) {
                 p = new Promise(async (resolve, reject) => {
-                    const res = await getTree()
+                    const res = await getTree({parentId: -1})
                     menus.value = res.data
                     const menuItems = flatMenus(menus.value).filter(it => it.menuType === 'C')
                     for (let menu of menuItems) {
