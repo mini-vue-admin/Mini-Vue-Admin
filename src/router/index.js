@@ -38,6 +38,13 @@ export const dynamic = [{
     meta: {
         title: '部门成员'
     }
+},{
+    path: '/system/role/member/:id(\\d+)',
+    name: 'roleMember',
+    component: () => import('@/views/system/role/member.vue'),
+    meta: {
+        title: '角色成员'
+    }
 },
 //     {
 //     path: '/:pathMatch(.*)',

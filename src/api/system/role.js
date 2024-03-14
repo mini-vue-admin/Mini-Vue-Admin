@@ -30,3 +30,29 @@ export function del(id) {
         params: {id: param}
     })
 }
+
+export function getMemberPage(params) {
+    return request.get("/system/role/member", {params: params})
+}
+
+export function addMember(roleId, memberId) {
+    return request.post("/system/role/member", {roleId: roleId, memberId: memberId})
+}
+
+export function delMember(roleId, userId) {
+    let param = Array.isArray(userId) ? userId.join(",") : userId
+    return request.delete("/system/role/member", {
+        params: {memberId: param, roleId: roleId}
+    })
+}
+
+export function saveRoleMenus(roleId, menuId) {
+    return request.post("/system/role/menu", {
+        roleId: roleId,
+        menuId: menuId
+    })
+}
+
+export function getRoleMenus(id) {
+    return request.get("/system/role/menu", {params: {roleId: id}})
+}

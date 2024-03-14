@@ -47,11 +47,6 @@
     <el-table ref="tableRef" :data="tableData.list" :border="true">
       <el-table-column type="selection"></el-table-column>
       <el-table-column fixed prop="id" label="id"/>
-      <el-table-column prop="deptId" label="部门">
-        <template #default="scope">
-          {{ deptListData.find(it => it.id === scope.row.deptId)?.deptName }}
-        </template>
-      </el-table-column>
       <el-table-column prop="username" label="用户名"/>
       <el-table-column prop="nickname" label="昵称"/>
       <el-table-column prop="email" label="邮箱"/>
@@ -106,11 +101,6 @@
     <el-table ref="availableUserTableRef" :data="availableUserData.list" :border="true">
       <el-table-column type="selection"></el-table-column>
       <el-table-column fixed prop="id" label="id"/>
-      <el-table-column prop="deptId" label="部门">
-        <template #default="scope">
-          {{ deptListData.find(it => it.id === scope.row.deptId)?.deptName }}
-        </template>
-      </el-table-column>
       <el-table-column prop="username" label="用户名"/>
       <el-table-column prop="nickname" label="昵称"/>
       <el-table-column prop="email" label="邮箱"/>
@@ -136,10 +126,10 @@
 
 <script setup>
 import {reactive, ref, unref} from "vue";
-import {create, getPage, update} from "@/api/system/user.js"
+import { getMemberPage} from "@/api/system/role.js"
 import {ElMessage, ElMessageBox} from "element-plus";
 import MiDictLabel from "@/components/dict/MiDictLabel.vue";
-import {addMember, delMember, getTree} from "@/api/system/dept.js";
+import {addMember, delMember} from "@/api/system/role.js";
 import {flat, flatQuery} from "@/api/utils.js";
 import {useRoute} from "vue-router";
 
@@ -151,10 +141,10 @@ const availableUserTableRef = ref()
 
 const queryParams = reactive({
   pageIndex: 1,
-  pageSize: 10
+  pageSize: 10,
+  params: {}
 })
 
-const formData = ref({})
 const formDialog = reactive({
   title: null,
   open: false
@@ -164,22 +154,18 @@ const tableData = ref({
   list: [],
   total: 0
 })
-const deptListData = ref([])
 
 const route = useRoute()
-queryParams.deptId = route.params.id
+queryParams.params.roleId = route.params.id
 
 handleQuery()
-getTree({parentId: -1}).then(res => {
-  deptListData.value = flat(res.data)
-})
 
 const availableUserQueryParams = reactive({
   pageIndex: 1,
   pageSize: 10,
   params: {
     keyWord: null,
-    disDeptId: route.params.id
+    disRoleId: route.params.id
   }
 })
 const availableUserData = ref({
@@ -190,7 +176,7 @@ const availableUserData = ref({
 // ---------------------- Functions ---------------------------
 
 function handleQuery() {
-  getPage(queryParams).then(res => {
+  getMemberPage(flatQuery(queryParams)).then(res => {
     tableData.value = res.data
   })
 }
@@ -216,7 +202,7 @@ function handleDelete(id) {
     confirmButtonText: '确认'
   })
       .then(() => {
-        delMember(queryParams.deptId, id).then(res => {
+        delMember(route.params.id, id).then(res => {
           ElMessage.success('操作成功')
           handleQuery()
         })
@@ -230,7 +216,7 @@ function handleAdd() {
 }
 
 function handleQueryAvailableUser() {
-  getPage(flatQuery(availableUserQueryParams)).then(res => {
+  getMemberPage(flatQuery(availableUserQueryParams)).then(res => {
     availableUserData.value = res.data
   })
 }
@@ -248,7 +234,7 @@ function submitForm(formEl) {
     ElMessage.warning('请选择至少一条记录')
     return
   }
-  addMember(queryParams.deptId, id).then(() => {
+  addMember(route.params.id, id).then(() => {
     formDialog.open = false
     handleQuery()
   })
