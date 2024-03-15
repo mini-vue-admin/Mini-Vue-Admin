@@ -1,2 +1,5 @@
 FROM node:20-slim
-RUN npm install -g pnpm && pnpm i && pnpm run dev
+WORKDIR /app
+COPY . .
+RUN npm install -g pnpm && pnpm i
+CMD ["pnpm", "run", "dev"]
