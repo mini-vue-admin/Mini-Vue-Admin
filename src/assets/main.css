@@ -16,3 +16,7 @@
 .fix-form-inline .el-select {
     --el-select-width: 220px;
 }
+
+.router-link-active {
+    text-decoration: none;
+}

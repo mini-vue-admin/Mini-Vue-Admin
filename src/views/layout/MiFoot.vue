@@ -1,7 +1,9 @@
 <template>
   <footer>
     <p style="text-align: center;  border-top: 1px solid var(--el-border-color);">
-      © 2023 Thinktech
+      <a href="https://github.com/shenbinglife/Mini-Vue-Admin">
+        Mini-Vue-Admin
+      </a>
     </p>
   </footer>
 </template>

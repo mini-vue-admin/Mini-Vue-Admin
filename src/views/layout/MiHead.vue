@@ -4,7 +4,7 @@
       <el-menu-item index="0">
         <RouterLink to="/" style="display: flex; align-items: center;">
           <img src="@/assets/logo.svg" alt="logo" width="48px"/>
-          <h1>MiniVue</h1>
+          <h1>Mini Vue Admin</h1>
         </RouterLink>
       </el-menu-item>
 

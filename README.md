@@ -1,4 +1,8 @@
-# vue-mini
+# Mini Vue Admin 
+
+<div style="text-align: center">
+<img src="docs/imgs/logo.png" width="40px" alt="Mini Vue Admin"/>
+</div>
 
 坚持**Less is More**，一个基于Vue + Element Plus的模板框架，采用JS开发，精简的依赖和组件，适合新手入门，也适合高手拓展
 
@@ -13,11 +17,11 @@
 - 精简的项目依赖
     - 除了上面核心依赖项，额外的依赖只有4个
 - 基于JS开发，而不是TS
-    - 使用ts开发的项目讲真只能增加复杂度，对于管理后台的项目来说并不能增加开发效率，微弱的类型安全可以忽略
+    - 使用ts开发的项目讲真只能增加复杂度，对于管理后台的项目来说并不能增加开发效率
 - 没有添加各种编译插件，例如：lint、git、auto import等
     - 这些插件的复杂度经常导致入门项目编译失败，如果认真使用IDE的自动导包、代码提示，一般就能解决任何问题
 - 没有复杂的自定义Component组件
-    - 经常看到其他的vue后台项目，例如ruoyi-ui、vue-element-admin等，
+    - 经常看到其他的vue后台项目，
       每个项目中包含的自定义组件就超级多，学习成本和使用成本也很高，其实element-plus中的组件已经够用，需要拓展的话可以基于此项目开发新的组件
 
 ## 项目文档
@@ -28,7 +32,8 @@
 
 很多前端后台项目没有接口文档，导致适配开发非常困难，需要开发人员自己不断阅读代码，总结数据结构，所以这里给出一份接口文档，方便开发者适配后端开发
 
-[接口文档](docs/接口文档.md)
+- [Markdown 接口文档](docs/接口文档.md)
+- [Apifox 接口文档](https://uke7m4ybeu.apifox.cn/)
 
 ## 初始化项目
 
@@ -49,20 +54,19 @@ pnpm build
 ```
 
 ## 项目截图
-
 ![img.png](docs/imgs/img.png)
 
 ![img_1.png](docs/imgs/img_1.png)
 
 ![img_2.png](docs/imgs/img_2.png)
 
-![img.png](docs/imgs/img_6.png)
-
 ![img_3.png](docs/imgs/img_3.png)
 
 ![img_4.png](docs/imgs/img_4.png)
 
 ![img_5.png](docs/imgs/img_5.png)
+
+![img_6.png](docs/imgs/img_6.png)
 
 ## 联系和赞助
 
