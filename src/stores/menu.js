@@ -12,6 +12,8 @@ export const useMenuStore = defineStore('menuStore', () => {
     let loaded = ref(false)
     let p = null
 
+    let viteComponents = [];
+
 
     const initRouter = async () => {
         if (loaded.value) {
@@ -19,6 +21,8 @@ export const useMenuStore = defineStore('menuStore', () => {
         } else {
             if (p == null) {
                 p = new Promise(async (resolve, reject) => {
+                    viteComponents = import.meta.glob(`@/views/**/*.vue`)
+
                     const res = await getTree({parentId: -1})
                     menus.value = res.data
                     const menuItems = flatMenus(menus.value).filter(it => it.menuType === 'C')
@@ -76,16 +80,16 @@ export const useMenuStore = defineStore('menuStore', () => {
             router.push('/')
         } else {
             let target = '/'
-            if (route.meta.active ) {
-                if(tags.value.length > 1) {
+            if (route.meta.active) {
+                if (tags.value.length > 1) {
                     const i = tags.value.indexOf(route)
                     if (i < 0) {
                         return
                     }
-                    if (i === tags.value.length -1) {
-                        target = tags.value[i-1].path
+                    if (i === tags.value.length - 1) {
+                        target = tags.value[i - 1].path
                     } else {
-                        target = tags.value[i+1].path
+                        target = tags.value[i + 1].path
                     }
                 } else {
                     target = '/'
@@ -118,7 +122,7 @@ export const useMenuStore = defineStore('menuStore', () => {
         return {
             name: menu.menuName,
             path: menu.path,
-            component: () => import("../views/" + menu.component + ".vue"),
+            component: viteComponents["/src/views/" + menu.component + ".vue"],
             meta: {
                 keepAlive: menu.cache,
                 title: menu.menuTitle,
