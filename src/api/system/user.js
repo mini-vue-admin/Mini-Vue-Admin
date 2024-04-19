@@ -26,7 +26,5 @@ export function del(id) {
 }
 
 export function resetPwd(id) {
-    return request.post("/system/user/resetPassword", {
-        id: id
-    })
+    return request.post(`/system/user/${id}/resetPassword`)
 }
