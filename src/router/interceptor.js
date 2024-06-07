@@ -4,8 +4,8 @@ import NProgress from 'nprogress'
 
 import {useMenuStore} from "@/stores/menu.js";
 import {useDictStore} from "@/stores/dict.js";
+import {whiteList} from "@/api/constants.js";
 
-const whiteList = ['/register', '/login']
 
 router.beforeEach(async (to, from, next) => {
     NProgress.start()

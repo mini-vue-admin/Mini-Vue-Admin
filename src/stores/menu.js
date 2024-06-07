@@ -3,6 +3,7 @@ import {ref, defineAsyncComponent} from 'vue'
 import {getTree} from "@/api/system/menu.js";
 import router, {dynamic} from '@/router/index.js'
 import {pathToBreadcrumb} from "@/api/utils.js";
+import {whiteList} from "@/api/constants.js";
 
 export const useMenuStore = defineStore('menuStore', () => {
     const menus = ref([])
@@ -50,7 +51,11 @@ export const useMenuStore = defineStore('menuStore', () => {
     const initTags = () => {
         const route = router.currentRoute.value
         const path = route.path
-        let cur = tags.value.find(it => it.path === path)
+        if (whiteList.includes(path)) {
+            return
+        }
+
+        let cur = tags.value.find(it => it.path === path);
         if (!cur) {
             cur = route
             tags.value.push(cur)
