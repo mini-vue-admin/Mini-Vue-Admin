@@ -20,7 +20,7 @@ export default defineConfig({
         proxy: {
             // 设置代理，用于跨域请求
             '/api': {
-                target: 'http://localhost:8080', // 代理目标地址
+                target: 'http://localhost:8000', // 代理目标地址
                 ws: true,
                 changeOrigin: true, // 是否改变请求头中的 Origin 字段，默认为 true
                 rewrite: (path) => path.replace(/^\/api\/v1/, '')

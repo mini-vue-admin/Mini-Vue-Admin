@@ -28,3 +28,7 @@ export function del(id) {
 export function resetPwd(id) {
     return request.post(`/system/user/${id}/resetPassword`)
 }
+
+export function getSelf() {
+    return request.get("/system/user/own")
+}
