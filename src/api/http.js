@@ -3,6 +3,7 @@ import {ElLoading, ElMessage} from 'element-plus'
 import qs from "qs";
 import {getToken} from "@/api/token.js";
 import {saveAs} from 'file-saver'
+import {logout} from "@/api/login.js";
 
 class AxiosCanceler {
     pending = new Map()
@@ -118,7 +119,7 @@ service.interceptors.response.use(res => {
         return Promise.reject(msg)
     }
 }, error => {
-    console.log("axios response error: " + error)
+
 
     let {message, config, response} = error;
     !config.repeatAllowed && axiosCanceler.rmPending(config)
@@ -138,6 +139,9 @@ service.interceptors.response.use(res => {
     }
 
     ElMessage({message: message, type: 'error', duration: 5 * 1000})
+    if (response && response.status === 401) {
+        logout()
+    }
     return Promise.reject(error)
 })
 

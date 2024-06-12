@@ -6,10 +6,14 @@ import {useMenuStore} from "@/stores/menu.js";
 import {useDictStore} from "@/stores/dict.js";
 import {whiteList} from "@/api/constants.js";
 
-
-router.beforeEach(async (to, from, next) => {
-    NProgress.start()
-
+/**
+ * Initializes the router by updating routes and dictionaries if necessary.
+ *
+ * @param {any} to - The route to navigate to.
+ * @param {any} from - The current route.
+ * @param {Function} next - The next function to be called in the navigation process.
+ */
+const initRouter = async (to, from, next) => {
     // 更新路由
     const menuStore = useMenuStore()
     if (!menuStore.loaded) {
@@ -21,7 +25,11 @@ router.beforeEach(async (to, from, next) => {
 
     // 更新字典
     const dictStore = useDictStore()
-    dictStore.initStore()
+    await dictStore.initStore()
+}
+
+router.beforeEach(async (to, from, next) => {
+    NProgress.start()
 
     // 是否启用认证
     const authEnabled = import.meta.env.VITE_APP_AUTH_ENABLED ?? false;
@@ -30,6 +38,7 @@ router.beforeEach(async (to, from, next) => {
         // 是否登录
         const hasLogged = getToken();
         if (hasLogged) {
+            await initRouter(to, from, next)
             if (to.path === '/login') {
                 next({path: '/'})
             } else {
@@ -45,13 +54,13 @@ router.beforeEach(async (to, from, next) => {
             }
         }
     } else {
+        await initRouter(to, from, next)
         if (to.path === '/login') {
             next({path: '/'})
         } else {
             next()
         }
     }
-
 })
 
 router.afterEach(() => {
