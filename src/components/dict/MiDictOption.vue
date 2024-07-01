@@ -3,17 +3,13 @@
 </template>
 
 <script>
-import {ElSelect} from 'element-plus';
-
 export default {
-  extends: ElSelect,//继承
-  name: 'MiDictSelect',
-  methods: {},
+  name: 'MiDictOption'
 };
 </script>
 
 <script setup>
-import {ref, onMounted, defineProps} from 'vue'
+import {ref} from 'vue'
 import {useDictStore} from "@/stores/dict.js";
 
 const props = defineProps({
@@ -22,14 +18,10 @@ const props = defineProps({
     required: true
   }
 })
-const dicts = ref([])
 
 const dictStore = useDictStore()
-
-// 在组件挂载时获取用户信息
-onMounted(async () => {
-  dictStore.initStore().then(() => {
-    dicts.value = dictStore.getDictsByType(props.dictType)
-  })
-})
+const dicts = ref([])
+dictStore.getDictsByType(props.dictType).then(data =>
+    dicts.value = data
+)
 </script>

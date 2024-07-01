@@ -1,5 +1,5 @@
 <template>
-  <el-button size="small" :type="dict.cssClass" >{{ dict.dictLabel }}</el-button>
+  <el-tag size="small" :type="dict.cssClass">{{ dict.dictLabel }}</el-tag>
 </template>
 <script>
 export default {
@@ -22,14 +22,12 @@ const props = defineProps({
   }
 })
 const dictStore = useDictStore()
-const dict = computed(() => {
-  if(props.dictType === null) {
-    return {
-      cssClass: 'primary',
-      dictLabel: null
-    }
-  }
-  return dictStore.getDictLabel(props.dictType, props.dictValue)
+const dict = ref({
+  cssClass: 'danger',
+  dictLabel: null
+})
+dictStore.getDictLabel(props.dictType, props.dictValue).then(data => {
+  dict.value = data
 })
 
 </script>

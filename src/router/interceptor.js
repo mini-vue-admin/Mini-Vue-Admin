@@ -3,8 +3,8 @@ import {getToken} from "@/api/token.js";
 import NProgress from 'nprogress'
 
 import {useMenuStore} from "@/stores/menu.js";
-import {useDictStore} from "@/stores/dict.js";
 import {whiteList} from "@/api/constants.js";
+import {auth_enabled} from "@/config.js";
 
 /**
  * Initializes the router by updating routes and dictionaries if necessary.
@@ -22,19 +22,13 @@ const initRouter = async (to, from, next) => {
             path: to.fullPath
         })
     }
-
-    // 更新字典
-    const dictStore = useDictStore()
-    await dictStore.initStore()
 }
 
 router.beforeEach(async (to, from, next) => {
     NProgress.start()
 
     // 是否启用认证
-    const authEnabled = import.meta.env.VITE_APP_AUTH_ENABLED ?? false;
-
-    if (JSON.parse(authEnabled)) {
+    if (auth_enabled) {
         // 是否登录
         const hasLogged = getToken();
         if (hasLogged) {
@@ -48,9 +42,7 @@ router.beforeEach(async (to, from, next) => {
             if (whiteList.includes(to.path)) {
                 next()
             } else {
-                next({
-                    path: '/login'
-                })
+                next({path: '/login'})
             }
         }
     } else {

@@ -52,6 +52,10 @@
       <el-col :span="1.5">
         <el-button type="danger" @click="handleDelete">删除</el-button>
       </el-col>
+
+      <el-col :span="1.5">
+        <el-button type="primary" @click="toggleTable">展开/折叠</el-button>
+      </el-col>
     </el-row>
 
     <el-table ref="tableRef" :data="tableData" style="width: 100%;" :border="true" row-key="id">
@@ -269,5 +273,21 @@ function submitForm(formEl) {
 
 function cancelForm() {
   formDialog.open = false
+}
+
+
+let toggle = true
+function toggleTable() {
+  handleArr(tableData.value, toggle)
+  toggle = !toggle
+}
+
+function handleArr(arr, flag) {
+  arr.forEach(i => {
+    tableRef.value.toggleRowExpansion(i, flag);
+    if (i.children) {
+      handleArr(i.children, flag);
+    }
+  });
 }
 </script>

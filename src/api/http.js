@@ -4,6 +4,7 @@ import qs from "qs";
 import {getToken} from "@/api/token.js";
 import {saveAs} from 'file-saver'
 import {logout} from "@/api/login.js";
+import {auth_enabled, base_url} from "@/config.js";
 
 class AxiosCanceler {
     pending = new Map()
@@ -31,7 +32,7 @@ const axiosCanceler = new AxiosCanceler();
 // 创建axios实例
 const service = axios.create({
     // axios中请求配置有baseURL选项，表示请求URL公共部分
-    baseURL: import.meta.env.VITE_APP_BASE_API,
+    baseURL: base_url,
     // 超时, millis
     timeout: 30000,
     loading: null,
@@ -55,16 +56,11 @@ service.endLoading = () => {
     service.defaults.loadingCount -= 1
 }
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 
 // request拦截器
 service.interceptors.request.use(async (config) => {
     // 是否需要设置 token
-    config.authRequire ?? (config.authRequire = true);
-    if (getToken() && config.authRequire) {
+    if (auth_enabled && getToken()) {
         config.headers['Authorization'] = 'Bearer ' + getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
     }
 
@@ -112,10 +108,10 @@ service.interceptors.response.use(res => {
         return res
     }
 
-    if (res.status === 200 && (code === 200 || code === 0)) {
+    if (res.status === 200 && res.data.code === 0) {
         return res.data
     } else {
-        ElMessage({message: msg, type: 'error'})
+        ElMessage({message: msg, type: 'error', duration: 5 * 1000})
         return Promise.reject(msg)
     }
 }, error => {
@@ -129,8 +125,8 @@ service.interceptors.response.use(res => {
         message = "后端接口连接异常";
     } else if (message.includes("timeout")) {
         message = "系统接口请求超时";
-    } else if (message.includes("Request failed with status code")) {
-        message = "系统接口" + message.substring(message.length - 3) + "异常";
+    } else {
+        message = response.data.msg
     }
     if (response && response.status === 401) {
         message = "认证失败"

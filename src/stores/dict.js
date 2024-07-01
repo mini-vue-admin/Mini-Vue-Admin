@@ -1,5 +1,4 @@
 import {defineStore} from 'pinia'
-import {getList as getDictTypeList} from "@/api/system/dictType.js";
 import {getList as getDictDataList} from "@/api/system/dictData.js";
 
 export const useDictStore = defineStore('dictStore', () => {
@@ -34,15 +33,21 @@ export const useDictStore = defineStore('dictStore', () => {
         }
     }
 
-    const getDictValue = (dictType, dictLabel) => {
-        return getDictsByType(dictType).find(it => it.dictLabel === dictLabel)
+
+    const getDictValue = async (dictType, dictLabel) => {
+        const dicts = await getDictsByType(dictType)
+        return dicts.find(it => it.dictLabel === dictLabel)
     }
 
-    const getDictLabel = (dictType, dictValue) => {
-        return getDictsByType(dictType).find(it => it.dictValue === dictValue) ?? {}
+    const getDictLabel = async (dictType, dictValue) => {
+        const dicts = await getDictsByType(dictType)
+        return dicts.find(it => it.dictValue === dictValue)
     }
 
-    const getDictsByType = (dictType) => dicts.get(dictType)??[]
+    const getDictsByType = async (dictType) => {
+        await initStore()
+        return dicts.get(dictType) ?? []
+    }
 
     return {initStore, getDictValue, getDictLabel, getDictsByType}
 })

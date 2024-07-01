@@ -120,7 +120,7 @@
       </el-form-item>
       <el-form-item label="性别" prop="sex">
         <el-select v-model="formData.sex" placeholder="请选择性别">
-          <MiDictSelect dict-type="system.user.sex"/>
+          <MiDictOption dict-type="system.user.sex"/>
         </el-select>
       </el-form-item>
 <!--      <el-form-item label="密码" prop="password" v-if="formData.id == null">-->
@@ -157,7 +157,7 @@ import {create, del, getPage, getById, update, resetPwd} from "@/api/system/user
 import {ElMessage, ElMessageBox} from "element-plus";
 import MiDictLabel from "@/components/dict/MiDictLabel.vue";
 import {getTree} from "@/api/system/dept.js";
-import MiDictSelect from "@/components/dict/MiDictOption.vue";
+import MiDictOption from "@/components/dict/MiDictOption.vue";
 import {flat} from "@/api/utils.js";
 
 const queryRef = ref(null)

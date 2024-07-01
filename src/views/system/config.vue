@@ -14,7 +14,7 @@
                    placeholder="请选择参数类型"
                    clearable
                    @keyup.enter.native="handleQuery">
-          <MiDictSelect dict-type="system.config.type"/>
+          <MiDictOption dict-type="system.config.type"/>
         </el-select>
       </el-form-item>
       <el-form-item label="参数键名" prop="configKey">
@@ -91,7 +91,7 @@
       </el-form-item>
       <el-form-item label="参数类型" prop="configType">
         <el-select v-model="formData.configType">
-          <MiDictSelect dict-type="system.config.type"/>
+          <MiDictOption dict-type="system.config.type"/>
         </el-select>
       </el-form-item>
       <el-form-item label="参数键名" prop="configKey">
@@ -117,7 +117,7 @@ import {reactive, ref} from "vue";
 import {create, del, getById, getPage, update} from "@/api/system/config.js"
 import {ElMessage, ElMessageBox} from "element-plus";
 import MiDictLabel from "@/components/dict/MiDictLabel.vue";
-import MiDictSelect from "@/components/dict/MiDictOption.vue";
+import MiDictOption from "@/components/dict/MiDictOption.vue";
 
 const queryRef = ref()
 const formRef = ref()

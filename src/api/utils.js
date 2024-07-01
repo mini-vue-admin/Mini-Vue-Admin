@@ -42,3 +42,12 @@ export function flat(tree) {
  * @param obj
  */
 export const flatQuery = (obj) => qs.parse(qs.stringify(obj, {allowDots: true}))
+
+/**
+ * 睡眠方法
+ * @param ms
+ * @returns {Promise<unknown>}
+ */
+export function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
